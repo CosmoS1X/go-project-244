@@ -38,6 +38,9 @@ build:
 run:
 	go run cmd/$(APP_NAME)/main.go $(RUN_ARGS)
 
+install:
+	go install ./cmd/$(APP_NAME)
+
 vuln:
 	govulncheck ./...
 
