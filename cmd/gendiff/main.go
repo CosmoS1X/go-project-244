@@ -43,10 +43,13 @@ func run(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprintf(stdout, "Format: %s\n", format)
 
 			paths := c.StringArgs("paths")
-			file1 := paths[0]
-			file2 := paths[1]
-			fmt.Fprintf(stdout, "File 1: %s\nFile 2: %s\n", file1, file2)
 
+			diff, err := code.GenDiff(paths[0], paths[1], c.String("format"))
+			if err != nil {
+				return err
+			}
+
+			fmt.Fprintln(stdout, diff)
 			return nil
 		},
 	}
