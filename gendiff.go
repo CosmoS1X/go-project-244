@@ -3,6 +3,7 @@ package code
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -42,6 +43,49 @@ func readAndParseFile(path string) (ParsedData, error) {
 	return parse(data)
 }
 
+func getCommonKeys(data1, data2 ParsedData) []string {
+	uniqMap := make(map[string]struct{}, len(data1)+len(data2))
+
+	for k := range data1 {
+		uniqMap[k] = struct{}{}
+	}
+	for k := range data2 {
+		uniqMap[k] = struct{}{}
+	}
+
+	return slices.Sorted(maps.Keys(uniqMap))
+}
+
+type Diff struct {
+	key      string
+	value    any
+	newValue any
+	status   string
+}
+
+func makeDiff(data1, data2 ParsedData) []Diff {
+	commonKeys := getCommonKeys(data1, data2)
+	diff := make([]Diff, 0, len(commonKeys))
+
+	for _, k := range commonKeys {
+		value, hasKeyInData1 := data1[k]
+		newValue, hasKeyInData2 := data2[k]
+
+		switch {
+		case value == newValue:
+			diff = append(diff, Diff{key: k, value: value, status: "unchanged"})
+		case hasKeyInData1 && hasKeyInData2:
+			diff = append(diff, Diff{key: k, value: value, newValue: newValue, status: "changed"})
+		case hasKeyInData1 && !hasKeyInData2:
+			diff = append(diff, Diff{key: k, value: value, status: "deleted"})
+		case !hasKeyInData1 && hasKeyInData2:
+			diff = append(diff, Diff{key: k, newValue: newValue, status: "added"})
+		}
+	}
+
+	return diff
+}
+
 func GenDiff(path1, path2, format string) (string, error) {
 	if err := validateSupportedFile(path1); err != nil {
 		return "", err
@@ -60,9 +104,7 @@ func GenDiff(path1, path2, format string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Parsed data 1:", parsedData1)
-	fmt.Println("Parsed data 2:", parsedData2)
-	fmt.Println("Selected format:", format)
+	diff := makeDiff(parsedData1, parsedData2)
 
-	return "Data parsed successfully", nil
+	return fmt.Sprintf("Diff created: %v", diff), nil
 }
