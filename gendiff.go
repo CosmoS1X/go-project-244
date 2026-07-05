@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 )
 
 func validateSupportedFile(path string) error {
@@ -63,7 +64,14 @@ type Diff struct {
 	status   string
 }
 
-func makeDiff(data1, data2 ParsedData) []Diff {
+const (
+	Added     = "added"
+	Deleted   = "deleted"
+	Unchanged = "unchanged"
+	Changed   = "changed"
+)
+
+func buildDiff(data1, data2 ParsedData) []Diff {
 	commonKeys := getCommonKeys(data1, data2)
 	diff := make([]Diff, 0, len(commonKeys))
 
@@ -73,17 +81,44 @@ func makeDiff(data1, data2 ParsedData) []Diff {
 
 		switch {
 		case value == newValue:
-			diff = append(diff, Diff{key: k, value: value, status: "unchanged"})
+			diff = append(diff, Diff{key: k, value: value, status: Unchanged})
 		case hasKeyInData1 && hasKeyInData2:
-			diff = append(diff, Diff{key: k, value: value, newValue: newValue, status: "changed"})
+			diff = append(diff, Diff{key: k, value: value, newValue: newValue, status: Changed})
 		case hasKeyInData1 && !hasKeyInData2:
-			diff = append(diff, Diff{key: k, value: value, status: "deleted"})
+			diff = append(diff, Diff{key: k, value: value, status: Deleted})
 		case !hasKeyInData1 && hasKeyInData2:
-			diff = append(diff, Diff{key: k, newValue: newValue, status: "added"})
+			diff = append(diff, Diff{key: k, newValue: newValue, status: Added})
 		}
 	}
 
 	return diff
+}
+
+func fmtDiffStr(key string, value any, sign string) string {
+	return fmt.Sprintf("  %s %s: %v\n", sign, key, value)
+}
+
+func fmtDiff(diff []Diff) string {
+	var b strings.Builder
+	b.WriteString("{\n")
+
+	for _, d := range diff {
+		switch d.status {
+		case Added:
+			b.WriteString(fmtDiffStr(d.key, d.newValue, "+"))
+		case Deleted:
+			b.WriteString(fmtDiffStr(d.key, d.value, "-"))
+		case Unchanged:
+			b.WriteString(fmtDiffStr(d.key, d.value, " "))
+		case Changed:
+			b.WriteString(fmtDiffStr(d.key, d.value, "-"))
+			b.WriteString(fmtDiffStr(d.key, d.newValue, "+"))
+		}
+	}
+
+	b.WriteString("}")
+
+	return b.String()
 }
 
 func GenDiff(path1, path2, format string) (string, error) {
@@ -104,7 +139,7 @@ func GenDiff(path1, path2, format string) (string, error) {
 		return "", err
 	}
 
-	diff := makeDiff(parsedData1, parsedData2)
+	diff := buildDiff(parsedData1, parsedData2)
 
-	return fmt.Sprintf("Diff created: %v", diff), nil
+	return fmtDiff(diff), nil
 }
