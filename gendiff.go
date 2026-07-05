@@ -3,9 +3,11 @@ package code
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 )
 
 func validateSupportedFile(path string) error {
@@ -42,6 +44,83 @@ func readAndParseFile(path string) (ParsedData, error) {
 	return parse(data)
 }
 
+func getCommonKeys(data1, data2 ParsedData) []string {
+	uniqMap := make(map[string]struct{}, len(data1)+len(data2))
+
+	for k := range data1 {
+		uniqMap[k] = struct{}{}
+	}
+	for k := range data2 {
+		uniqMap[k] = struct{}{}
+	}
+
+	return slices.Sorted(maps.Keys(uniqMap))
+}
+
+type Diff struct {
+	key      string
+	value    any
+	newValue any
+	status   string
+}
+
+const (
+	Added     = "added"
+	Deleted   = "deleted"
+	Unchanged = "unchanged"
+	Changed   = "changed"
+)
+
+func buildDiff(data1, data2 ParsedData) []Diff {
+	commonKeys := getCommonKeys(data1, data2)
+	diff := make([]Diff, 0, len(commonKeys))
+
+	for _, k := range commonKeys {
+		value, hasKeyInData1 := data1[k]
+		newValue, hasKeyInData2 := data2[k]
+
+		switch {
+		case value == newValue:
+			diff = append(diff, Diff{key: k, value: value, status: Unchanged})
+		case hasKeyInData1 && hasKeyInData2:
+			diff = append(diff, Diff{key: k, value: value, newValue: newValue, status: Changed})
+		case hasKeyInData1 && !hasKeyInData2:
+			diff = append(diff, Diff{key: k, value: value, status: Deleted})
+		case !hasKeyInData1 && hasKeyInData2:
+			diff = append(diff, Diff{key: k, newValue: newValue, status: Added})
+		}
+	}
+
+	return diff
+}
+
+func fmtDiffStr(key string, value any, sign string) string {
+	return fmt.Sprintf("  %s %s: %v\n", sign, key, value)
+}
+
+func fmtDiff(diff []Diff) string {
+	var b strings.Builder
+	b.WriteString("{\n")
+
+	for _, d := range diff {
+		switch d.status {
+		case Added:
+			b.WriteString(fmtDiffStr(d.key, d.newValue, "+"))
+		case Deleted:
+			b.WriteString(fmtDiffStr(d.key, d.value, "-"))
+		case Unchanged:
+			b.WriteString(fmtDiffStr(d.key, d.value, " "))
+		case Changed:
+			b.WriteString(fmtDiffStr(d.key, d.value, "-"))
+			b.WriteString(fmtDiffStr(d.key, d.newValue, "+"))
+		}
+	}
+
+	b.WriteString("}")
+
+	return b.String()
+}
+
 func GenDiff(path1, path2, format string) (string, error) {
 	if err := validateSupportedFile(path1); err != nil {
 		return "", err
@@ -60,9 +139,7 @@ func GenDiff(path1, path2, format string) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Parsed data 1:", parsedData1)
-	fmt.Println("Parsed data 2:", parsedData2)
-	fmt.Println("Selected format:", format)
+	diff := buildDiff(parsedData1, parsedData2)
 
-	return "Data parsed successfully", nil
+	return fmtDiff(diff), nil
 }
