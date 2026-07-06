@@ -1,50 +1,29 @@
 package code
 
 import (
-	"encoding/json"
 	"fmt"
 	"maps"
-	"os"
-	"path/filepath"
 	"slices"
 	"strings"
+
+	"code/parsers"
 )
 
-func validateSupportedFile(path string) error {
-	supportedExtensions := []string{".json", ".yml", ".yaml"}
+const (
+	Added     = "added"
+	Deleted   = "deleted"
+	Unchanged = "unchanged"
+	Changed   = "changed"
+)
 
-	base := filepath.Base(path)
-	ext := filepath.Ext(path)
-
-	if !slices.Contains(supportedExtensions, ext) {
-		return fmt.Errorf("extension '%s' of file '%s' is not supported", ext, base)
-	}
-
-	return nil
+type Diff struct {
+	key      string
+	value    any
+	newValue any
+	status   string
 }
 
-type ParsedData map[string]any
-
-func parse(data []byte) (ParsedData, error) {
-	parsedData := make(ParsedData)
-	err := json.Unmarshal(data, &parsedData)
-	if err != nil {
-		return nil, err
-	}
-
-	return parsedData, nil
-}
-
-func readAndParseFile(path string) (ParsedData, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return parse(data)
-}
-
-func getCommonKeys(data1, data2 ParsedData) []string {
+func getCommonKeys(data1, data2 parsers.ParsedData) []string {
 	uniqMap := make(map[string]struct{}, len(data1)+len(data2))
 
 	for k := range data1 {
@@ -57,21 +36,7 @@ func getCommonKeys(data1, data2 ParsedData) []string {
 	return slices.Sorted(maps.Keys(uniqMap))
 }
 
-type Diff struct {
-	key      string
-	value    any
-	newValue any
-	status   string
-}
-
-const (
-	Added     = "added"
-	Deleted   = "deleted"
-	Unchanged = "unchanged"
-	Changed   = "changed"
-)
-
-func buildDiff(data1, data2 ParsedData) []Diff {
+func buildDiff(data1, data2 parsers.ParsedData) []Diff {
 	commonKeys := getCommonKeys(data1, data2)
 	diff := make([]Diff, 0, len(commonKeys))
 
@@ -122,19 +87,11 @@ func fmtDiff(diff []Diff) string {
 }
 
 func GenDiff(path1, path2, format string) (string, error) {
-	if err := validateSupportedFile(path1); err != nil {
-		return "", err
-	}
-	if err := validateSupportedFile(path2); err != nil {
-		return "", err
-	}
-
-	parsedData1, err := readAndParseFile(path1)
+	parsedData1, err := parsers.ParseFile(path1)
 	if err != nil {
 		return "", err
 	}
-
-	parsedData2, err := readAndParseFile((path2))
+	parsedData2, err := parsers.ParseFile(path2)
 	if err != nil {
 		return "", err
 	}
