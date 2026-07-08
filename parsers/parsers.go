@@ -11,7 +11,7 @@ import (
 
 type (
 	parseFn    func(in []byte, out any) error
-	ParsedData map[string]any
+	ParsedData = map[string]any
 )
 
 var parsers = map[string]parseFn{
