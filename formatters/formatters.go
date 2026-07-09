@@ -10,6 +10,7 @@ type formatFn func([]diff.Diff) string
 
 var formatters = map[string]formatFn{
 	"stylish": FmtStylish,
+	"plain":   FmtPlain,
 }
 
 func Format(diffNodes []diff.Diff, format string) (string, error) {
