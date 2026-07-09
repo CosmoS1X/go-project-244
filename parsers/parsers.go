@@ -23,7 +23,7 @@ var parsers = map[string]parseFn{
 func parseRaw(data []byte, parser parseFn) (ParsedData, error) {
 	var parsedData ParsedData
 	if err := parser(data, &parsedData); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse data: %w", err)
 	}
 
 	return parsedData, nil
