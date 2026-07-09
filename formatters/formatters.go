@@ -6,18 +6,20 @@ import (
 	"code/diff"
 )
 
-type formatFn func([]diff.Diff) string
+type Formatter interface {
+	Format(diffNodes []diff.Diff) string
+}
 
-var formatters = map[string]formatFn{
-	"stylish": FmtStylish,
-	"plain":   FmtPlain,
+var registry = map[string]Formatter{
+	"stylish": &stylishFormatter{},
+	"plain":   &plainFormatter{},
 }
 
 func Format(diffNodes []diff.Diff, format string) (string, error) {
-	formatter, ok := formatters[format]
+	formatter, ok := registry[format]
 	if !ok {
 		return "", fmt.Errorf("unsupported format name: %q", format)
 	}
 
-	return formatter(diffNodes), nil
+	return formatter.Format(diffNodes), nil
 }
