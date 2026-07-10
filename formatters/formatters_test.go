@@ -52,3 +52,15 @@ func TestFormat_PlainFormatter(t *testing.T) {
 	assert.Contains(t, got, "Property 'common.setting4' was added with value: 'blah blah'")
 	assert.Contains(t, got, "Property 'common.setting5' was added with value: [complex value]")
 }
+
+func TestFormat_JSONFormatter(t *testing.T) {
+	got, err := Format(testDiffNodes, "json")
+
+	assert.NoError(t, err)
+	assert.Contains(t, got, `"Key": "common"`)
+	assert.Contains(t, got, `"Children": [`)
+	assert.Contains(t, got, `"Key": "setting1"`)
+	assert.Contains(t, got, `"Value": "Value 1"`)
+	assert.Contains(t, got, `"NewValue": null`)
+	assert.Contains(t, got, `"Status": "nested"`)
+}
