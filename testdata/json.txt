@@ -1,0 +1,187 @@
+[
+    {
+        "Key": "common",
+        "Value": null,
+        "NewValue": null,
+        "Status": "nested",
+        "Children": [
+            {
+                "Key": "follow",
+                "Value": null,
+                "NewValue": false,
+                "Status": "added",
+                "Children": null
+            },
+            {
+                "Key": "setting1",
+                "Value": "Value 1",
+                "NewValue": null,
+                "Status": "unchanged",
+                "Children": null
+            },
+            {
+                "Key": "setting2",
+                "Value": 200,
+                "NewValue": null,
+                "Status": "deleted",
+                "Children": null
+            },
+            {
+                "Key": "setting3",
+                "Value": true,
+                "NewValue": null,
+                "Status": "changed",
+                "Children": null
+            },
+            {
+                "Key": "setting4",
+                "Value": null,
+                "NewValue": "blah blah",
+                "Status": "added",
+                "Children": null
+            },
+            {
+                "Key": "setting5",
+                "Value": null,
+                "NewValue": {
+                    "key5": "value5"
+                },
+                "Status": "added",
+                "Children": null
+            },
+            {
+                "Key": "setting6",
+                "Value": null,
+                "NewValue": null,
+                "Status": "nested",
+                "Children": [
+                    {
+                        "Key": "doge",
+                        "Value": null,
+                        "NewValue": null,
+                        "Status": "nested",
+                        "Children": [
+                            {
+                                "Key": "wow",
+                                "Value": "",
+                                "NewValue": "so much",
+                                "Status": "changed",
+                                "Children": null
+                            }
+                        ]
+                    },
+                    {
+                        "Key": "key",
+                        "Value": "value",
+                        "NewValue": null,
+                        "Status": "unchanged",
+                        "Children": null
+                    },
+                    {
+                        "Key": "ops",
+                        "Value": null,
+                        "NewValue": "vops",
+                        "Status": "added",
+                        "Children": null
+                    }
+                ]
+            },
+            {
+                "Key": "slice1",
+                "Value": [
+                    {
+                        "id": 1
+                    },
+                    {
+                        "id": 2
+                    }
+                ],
+                "NewValue": [
+                    {
+                        "id": 1
+                    },
+                    {
+                        "id": 3
+                    }
+                ],
+                "Status": "changed",
+                "Children": null
+            },
+            {
+                "Key": "slice2",
+                "Value": [
+                    [
+                        1,
+                        2
+                    ]
+                ],
+                "NewValue": [
+                    [
+                        1,
+                        2
+                    ],
+                    3
+                ],
+                "Status": "changed",
+                "Children": null
+            }
+        ]
+    },
+    {
+        "Key": "group1",
+        "Value": null,
+        "NewValue": null,
+        "Status": "nested",
+        "Children": [
+            {
+                "Key": "baz",
+                "Value": "bas",
+                "NewValue": "bars",
+                "Status": "changed",
+                "Children": null
+            },
+            {
+                "Key": "foo",
+                "Value": "bar",
+                "NewValue": null,
+                "Status": "unchanged",
+                "Children": null
+            },
+            {
+                "Key": "nest",
+                "Value": {
+                    "key": "value"
+                },
+                "NewValue": "str",
+                "Status": "changed",
+                "Children": null
+            }
+        ]
+    },
+    {
+        "Key": "group2",
+        "Value": {
+            "abc": 12345,
+            "deep": {
+                "id": 45
+            }
+        },
+        "NewValue": null,
+        "Status": "deleted",
+        "Children": null
+    },
+    {
+        "Key": "group3",
+        "Value": null,
+        "NewValue": {
+            "deep": {
+                "id": {
+                    "number": 45
+                }
+            },
+            "fee": 100500
+        },
+        "Status": "added",
+        "Children": null
+    }
+]
