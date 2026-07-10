@@ -93,3 +93,20 @@ func TestBuild_ProducesExpectedDiff(t *testing.T) {
 
 	assert.Equal(t, expectedDiff(), got)
 }
+
+func TestIsEqual_ReturnsFalseForMismatchedContainerTypes(t *testing.T) {
+	cases := []struct {
+		name  string
+		left  any
+		right any
+	}{
+		{name: "slice type mismatch", left: []any{1, 2}, right: []string{"1", "2"}},
+		{name: "map type mismatch", left: map[string]any{"a": 1}, right: map[string]string{"a": "1"}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			assert.False(t, isEqual(c.left, c.right))
+		})
+	}
+}
