@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -17,9 +17,22 @@ const (
 	yamlFile2     = "file2.yaml"
 	stylishFile   = "stylish.txt"
 	plainFile     = "plain.txt"
+	jsonFile      = "json.txt"
 	formatStylish = "stylish"
 	formatPlain   = "plain"
+	formatJSON    = "json"
 )
+
+func readExpectedOutput(t *testing.T, path string) string {
+	t.Helper()
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return strings.TrimSpace(string(data))
+}
 
 func TestGendiff(t *testing.T) {
 	cases := []struct {
@@ -27,6 +40,7 @@ func TestGendiff(t *testing.T) {
 		path1, path2 string
 		format       string
 		expected     string
+		wantErr      bool
 	}{
 		{
 			name:     "compare json files with stylish format",
@@ -56,22 +70,65 @@ func TestGendiff(t *testing.T) {
 			format:   formatPlain,
 			expected: filepath.Join(testdataDir, plainFile),
 		},
+		{
+			name:     "compare json files with json format",
+			path1:    filepath.Join(testdataDir, jsonFile1),
+			path2:    filepath.Join(testdataDir, jsonFile2),
+			format:   formatJSON,
+			expected: filepath.Join(testdataDir, jsonFile),
+		},
+		{
+			name:     "compare yaml files with json format",
+			path1:    filepath.Join(testdataDir, yamlFile1),
+			path2:    filepath.Join(testdataDir, yamlFile2),
+			format:   formatJSON,
+			expected: filepath.Join(testdataDir, jsonFile),
+		},
+		{
+			name:     "compare json and yaml files with stylish format",
+			path1:    filepath.Join(testdataDir, jsonFile1),
+			path2:    filepath.Join(testdataDir, yamlFile2),
+			format:   formatStylish,
+			expected: filepath.Join(testdataDir, stylishFile),
+		},
+		{
+			name:    "attempt to compare files with unsupported format",
+			path1:   filepath.Join(testdataDir, jsonFile1),
+			path2:   filepath.Join(testdataDir, jsonFile2),
+			format:  "unsupported",
+			wantErr: true,
+		},
+		{
+			name:    "attempt to compare non-existent file",
+			path1:   filepath.Join(testdataDir, "nonexistent.json"),
+			path2:   filepath.Join(testdataDir, jsonFile2),
+			format:  formatStylish,
+			wantErr: true,
+		},
+		{
+			name:    "attempt to compare files with unsupported extension",
+			path1:   filepath.Join(testdataDir, jsonFile1),
+			path2:   filepath.Join(testdataDir, "unsupported.txt"),
+			format:  formatStylish,
+			wantErr: true,
+		},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
 
-			data, err := os.ReadFile(c.expected)
-			if err != nil {
-				t.Fatal(err)
+			if c.wantErr {
+				_, err := GenDiff(c.path1, c.path2, c.format)
+				require.Error(t, err)
+				return
 			}
 
-			want := strings.TrimSpace(string(data))
+			want := readExpectedOutput(t, c.expected)
 			got, err := GenDiff(c.path1, c.path2, c.format)
 
-			assert.NoError(t, err)
-			assert.Equal(t, want, got)
+			require.NoError(t, err)
+			require.Equal(t, want, got)
 		})
 	}
 }
