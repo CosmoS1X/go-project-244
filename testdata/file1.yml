@@ -6,6 +6,12 @@ common:
     key: value
     doge:
       wow: ''
+  slice1:
+    - id: 1
+    - id: 2
+  slice2:
+    - - 1
+      - 2
 group1:
   baz: bas
   foo: bar

@@ -17,6 +17,10 @@
             key: value
           + ops: vops
         }
+      - slice1: [map[id:1] map[id:2]]
+      + slice1: [map[id:1] map[id:3]]
+      - slice2: [[1 2]]
+      + slice2: [[1 2] 3]
     }
     group1: {
       - baz: bas

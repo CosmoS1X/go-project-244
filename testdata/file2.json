@@ -13,7 +13,9 @@
       "doge": {
         "wow": "so much"
       }
-    }
+    },
+    "slice1": [{"id": 1}, {"id": 3}],
+    "slice2": [[1, 2], 3]
   },
   "group1": {
     "foo": "bar",
