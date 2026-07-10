@@ -2,7 +2,6 @@ package diff
 
 import (
 	"maps"
-	"reflect"
 	"slices"
 
 	"code/parsers"
@@ -45,6 +44,25 @@ func asParsedData(v any) (parsers.ParsedData, bool) {
 	return nil, false
 }
 
+func isEqual(val1, val2 any) bool {
+	switch v1 := val1.(type) {
+	case []any:
+		v2, ok := val2.([]any)
+		if !ok {
+			return false
+		}
+		return slices.EqualFunc(v1, v2, isEqual)
+	case map[string]any:
+		v2, ok := val2.(map[string]any)
+		if !ok {
+			return false
+		}
+		return maps.EqualFunc(v1, v2, isEqual)
+	default:
+		return val1 == val2
+	}
+}
+
 func Build(data1, data2 parsers.ParsedData) []Diff {
 	commonKeys := getCommonKeys(data1, data2)
 	diffNodes := make([]Diff, 0, len(commonKeys))
@@ -60,7 +78,7 @@ func Build(data1, data2 parsers.ParsedData) []Diff {
 		switch {
 		case hasChildren:
 			diffNodes = append(diffNodes, Diff{Key: k, Children: Build(map1, map2), Status: Nested})
-		case hasKeyInBothData && reflect.DeepEqual(value, newValue):
+		case isEqual(value, newValue):
 			diffNodes = append(diffNodes, Diff{Key: k, Value: value, Status: Unchanged})
 		case hasKeyInBothData:
 			diffNodes = append(diffNodes, Diff{Key: k, Value: value, NewValue: newValue, Status: Changed})
