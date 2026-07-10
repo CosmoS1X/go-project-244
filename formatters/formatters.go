@@ -13,6 +13,7 @@ type Formatter interface {
 var registry = map[string]Formatter{
 	"stylish": &stylishFormatter{},
 	"plain":   &plainFormatter{},
+	"json":    &jsonFormatter{},
 }
 
 func Format(diffNodes []diff.Diff, format string) (string, error) {
