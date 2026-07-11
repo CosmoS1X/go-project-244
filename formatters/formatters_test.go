@@ -57,10 +57,11 @@ func TestFormat_JSONFormatter(t *testing.T) {
 	got, err := Format(testDiffNodes, "json")
 
 	assert.NoError(t, err)
-	assert.Contains(t, got, `"Key": "common"`)
-	assert.Contains(t, got, `"Children": [`)
-	assert.Contains(t, got, `"Key": "setting1"`)
-	assert.Contains(t, got, `"Value": "Value 1"`)
-	assert.Contains(t, got, `"NewValue": null`)
-	assert.Contains(t, got, `"Status": "nested"`)
+	assert.Contains(t, got, `"key": ""`)
+	assert.Contains(t, got, `"type": "root"`)
+	assert.Contains(t, got, `"children": [`)
+	assert.Contains(t, got, `"key": "common"`)
+	assert.Contains(t, got, `"type": "nested"`)
+	assert.Contains(t, got, `"value1": "Value 1"`)
+	assert.Contains(t, got, `"value2": "blah blah"`)
 }
