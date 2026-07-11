@@ -8,11 +8,11 @@ import (
 )
 
 type Diff struct {
-	Key      string
-	Value    any
-	NewValue any
-	Status   string
-	Children []Diff
+	Key      string `json:"key"`
+	Type     string `json:"type"`
+	Value1   any    `json:"value1,omitempty"`
+	Value2   any    `json:"value2,omitempty"`
+	Children []Diff `json:"children,omitempty"`
 }
 
 const (
@@ -68,24 +68,24 @@ func Build(data1, data2 parsers.ParsedData) []Diff {
 	diffNodes := make([]Diff, 0, len(commonKeys))
 
 	for _, k := range commonKeys {
-		value, hasKeyInData1 := data1[k]
-		newValue, hasKeyInData2 := data2[k]
+		value1, hasKeyInData1 := data1[k]
+		value2, hasKeyInData2 := data2[k]
 		hasKeyInBothData := hasKeyInData1 && hasKeyInData2
-		map1, isMap1 := asParsedData(value)
-		map2, isMap2 := asParsedData(newValue)
+		map1, isMap1 := asParsedData(value1)
+		map2, isMap2 := asParsedData(value2)
 		hasChildren := isMap1 && isMap2
 
 		switch {
 		case hasChildren:
-			diffNodes = append(diffNodes, Diff{Key: k, Children: Build(map1, map2), Status: Nested})
-		case isEqual(value, newValue):
-			diffNodes = append(diffNodes, Diff{Key: k, Value: value, Status: Unchanged})
+			diffNodes = append(diffNodes, Diff{Key: k, Children: Build(map1, map2), Type: Nested})
+		case isEqual(value1, value2):
+			diffNodes = append(diffNodes, Diff{Key: k, Value1: value1, Type: Unchanged})
 		case hasKeyInBothData:
-			diffNodes = append(diffNodes, Diff{Key: k, Value: value, NewValue: newValue, Status: Changed})
+			diffNodes = append(diffNodes, Diff{Key: k, Value1: value1, Value2: value2, Type: Changed})
 		case hasKeyInData1:
-			diffNodes = append(diffNodes, Diff{Key: k, Value: value, Status: Deleted})
+			diffNodes = append(diffNodes, Diff{Key: k, Value1: value1, Type: Deleted})
 		case hasKeyInData2:
-			diffNodes = append(diffNodes, Diff{Key: k, NewValue: newValue, Status: Added})
+			diffNodes = append(diffNodes, Diff{Key: k, Value2: value2, Type: Added})
 		}
 	}
 

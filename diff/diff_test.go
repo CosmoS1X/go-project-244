@@ -52,37 +52,37 @@ func buildTestData() (data1, data2 parsers.ParsedData) {
 func expectedDiff() []Diff {
 	return []Diff{
 		{
-			Key:    "common",
-			Status: Nested,
+			Key:  "common",
+			Type: Nested,
 			Children: []Diff{
-				{Key: "follow", Status: Added, NewValue: false},
-				{Key: "setting1", Status: Unchanged, Value: "Value 1"},
-				{Key: "setting2", Status: Deleted, Value: 200},
-				{Key: "setting3", Status: Changed, Value: true, NewValue: nil},
-				{Key: "setting4", Status: Added, NewValue: "blah blah"},
-				{Key: "setting5", Status: Added, NewValue: parsers.ParsedData{"key5": "value5"}},
+				{Key: "follow", Type: Added, Value2: false},
+				{Key: "setting1", Type: Unchanged, Value1: "Value 1"},
+				{Key: "setting2", Type: Deleted, Value1: 200},
+				{Key: "setting3", Type: Changed, Value1: true, Value2: nil},
+				{Key: "setting4", Type: Added, Value2: "blah blah"},
+				{Key: "setting5", Type: Added, Value2: parsers.ParsedData{"key5": "value5"}},
 				{
-					Key:    "setting6",
-					Status: Nested,
+					Key:  "setting6",
+					Type: Nested,
 					Children: []Diff{
-						{Key: "deep", Status: Nested, Children: []Diff{{Key: "wow", Status: Changed, Value: "", NewValue: "so much"}}},
-						{Key: "key", Status: Unchanged, Value: "value"},
-						{Key: "ops", Status: Added, NewValue: "vops"},
+						{Key: "deep", Type: Nested, Children: []Diff{{Key: "wow", Type: Changed, Value1: "", Value2: "so much"}}},
+						{Key: "key", Type: Unchanged, Value1: "value"},
+						{Key: "ops", Type: Added, Value2: "vops"},
 					},
 				},
 			},
 		},
 		{
-			Key:      "slice1",
-			Status:   Changed,
-			Value:    []any{parsers.ParsedData{"id": 1}, parsers.ParsedData{"id": 2}},
-			NewValue: []any{parsers.ParsedData{"id": 1}, parsers.ParsedData{"id": 3}},
+			Key:    "slice1",
+			Type:   Changed,
+			Value1: []any{parsers.ParsedData{"id": 1}, parsers.ParsedData{"id": 2}},
+			Value2: []any{parsers.ParsedData{"id": 1}, parsers.ParsedData{"id": 3}},
 		},
 		{
-			Key:      "slice2",
-			Status:   Changed,
-			Value:    []any{[]any{1, 2}},
-			NewValue: []any{[]any{1, 2}, 3},
+			Key:    "slice2",
+			Type:   Changed,
+			Value1: []any{[]any{1, 2}},
+			Value2: []any{[]any{1, 2}, 3},
 		},
 	}
 }
