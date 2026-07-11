@@ -2,7 +2,6 @@ package formatters
 
 import (
 	"encoding/json"
-	"strings"
 
 	"code/diff"
 )
@@ -22,10 +21,7 @@ func (j *jsonFormatter) Format(diffNodes []diff.Diff) string {
 		Children: diffNodes,
 	}
 
-	indentSym := " "
-	indentSize := 2
-
-	data, _ := json.MarshalIndent(root, "", strings.Repeat(indentSym, indentSize))
+	data, _ := json.MarshalIndent(root, "", "  ")
 
 	return string(data)
 }
