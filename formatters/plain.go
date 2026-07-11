@@ -36,15 +36,15 @@ func (p *plainFormatter) walk(nodes []diff.Diff, path string) string {
 			propPath = path + "." + d.Key
 		}
 
-		switch d.Status {
+		switch d.Type {
 		case diff.Added:
-			fmt.Fprintf(&b, "Property '%s' was added with value: %s\n", propPath, p.fmtValue(d.NewValue))
+			fmt.Fprintf(&b, "Property '%s' was added with value: %s\n", propPath, p.fmtValue(d.Value2))
 		case diff.Deleted:
 			fmt.Fprintf(&b, "Property '%s' was removed\n", propPath)
 		case diff.Unchanged:
 			continue
 		case diff.Changed:
-			fmt.Fprintf(&b, "Property '%s' was updated. From %s to %s\n", propPath, p.fmtValue(d.Value), p.fmtValue(d.NewValue))
+			fmt.Fprintf(&b, "Property '%s' was updated. From %s to %s\n", propPath, p.fmtValue(d.Value1), p.fmtValue(d.Value2))
 		case diff.Nested:
 			fmt.Fprintln(&b, p.walk(d.Children, propPath))
 		}

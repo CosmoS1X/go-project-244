@@ -52,16 +52,16 @@ func (s *stylishFormatter) walk(nodes []diff.Diff, depth int) string {
 	indent := makeIndent(depth, 2)
 
 	for _, d := range nodes {
-		switch d.Status {
+		switch d.Type {
 		case diff.Added:
-			fmt.Fprintf(&b, "%s+ %s: %s\n", indent, d.Key, s.fmtValue(d.NewValue, depth))
+			fmt.Fprintf(&b, "%s+ %s: %s\n", indent, d.Key, s.fmtValue(d.Value2, depth))
 		case diff.Deleted:
-			fmt.Fprintf(&b, "%s- %s: %s\n", indent, d.Key, s.fmtValue(d.Value, depth))
+			fmt.Fprintf(&b, "%s- %s: %s\n", indent, d.Key, s.fmtValue(d.Value1, depth))
 		case diff.Unchanged:
-			fmt.Fprintf(&b, "%s  %s: %s\n", indent, d.Key, s.fmtValue(d.Value, depth))
+			fmt.Fprintf(&b, "%s  %s: %s\n", indent, d.Key, s.fmtValue(d.Value1, depth))
 		case diff.Changed:
-			fmt.Fprintf(&b, "%s- %s: %s\n", indent, d.Key, s.fmtValue(d.Value, depth))
-			fmt.Fprintf(&b, "%s+ %s: %s\n", indent, d.Key, s.fmtValue(d.NewValue, depth))
+			fmt.Fprintf(&b, "%s- %s: %s\n", indent, d.Key, s.fmtValue(d.Value1, depth))
+			fmt.Fprintf(&b, "%s+ %s: %s\n", indent, d.Key, s.fmtValue(d.Value2, depth))
 		case diff.Nested:
 			fmt.Fprintf(&b, "%s  %s: %v\n", indent, d.Key, s.walk(d.Children, depth+1))
 		}

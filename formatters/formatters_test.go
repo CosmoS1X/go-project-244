@@ -13,13 +13,13 @@ var testDiffNodes = []diff.Diff{
 	{
 		Key: "common",
 		Children: []diff.Diff{
-			{Key: "setting1", Value: "Value 1", Status: diff.Unchanged},
-			{Key: "setting2", Value: 200, Status: diff.Deleted},
-			{Key: "setting3", Value: true, NewValue: nil, Status: diff.Changed},
-			{Key: "setting4", NewValue: "blah blah", Status: diff.Added},
-			{Key: "setting5", NewValue: parsers.ParsedData{"key5": "value5"}, Status: diff.Added},
+			{Key: "setting1", Value1: "Value 1", Type: diff.Unchanged},
+			{Key: "setting2", Value1: 200, Type: diff.Deleted},
+			{Key: "setting3", Value1: true, Value2: nil, Type: diff.Changed},
+			{Key: "setting4", Value2: "blah blah", Type: diff.Added},
+			{Key: "setting5", Value2: parsers.ParsedData{"key5": "value5"}, Type: diff.Added},
 		},
-		Status: diff.Nested,
+		Type: diff.Nested,
 	},
 }
 
@@ -51,4 +51,17 @@ func TestFormat_PlainFormatter(t *testing.T) {
 	assert.Contains(t, got, "Property 'common.setting3' was updated. From true to null")
 	assert.Contains(t, got, "Property 'common.setting4' was added with value: 'blah blah'")
 	assert.Contains(t, got, "Property 'common.setting5' was added with value: [complex value]")
+}
+
+func TestFormat_JSONFormatter(t *testing.T) {
+	got, err := Format(testDiffNodes, "json")
+
+	assert.NoError(t, err)
+	assert.Contains(t, got, `"key": ""`)
+	assert.Contains(t, got, `"type": "root"`)
+	assert.Contains(t, got, `"children": [`)
+	assert.Contains(t, got, `"key": "common"`)
+	assert.Contains(t, got, `"type": "nested"`)
+	assert.Contains(t, got, `"value1": "Value 1"`)
+	assert.Contains(t, got, `"value2": "blah blah"`)
 }
