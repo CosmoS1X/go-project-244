@@ -26,22 +26,22 @@ func TestRun(t *testing.T) {
 		{
 			name:     "compare files with stylish format by default",
 			args:     []string{appname, filePath1, filePath2},
-			expected: "stylish.txt",
+			expected: "result_stylish.txt",
 		},
 		{
 			name:     "compare files with stylish format",
 			args:     []string{appname, "-f", "stylish", filePath1, filePath2},
-			expected: "stylish.txt",
+			expected: "result_stylish.txt",
 		},
 		{
 			name:     "compare files with plain format using long flag",
 			args:     []string{appname, "--format", "plain", filePath1, filePath2},
-			expected: "plain.txt",
+			expected: "result_plain.txt",
 		},
 		{
 			name:     "compare files with json format",
 			args:     []string{appname, "-f", "json", filePath1, filePath2},
-			expected: "json.txt",
+			expected: "result_json.json",
 		},
 		{
 			name:     "try to compare with broken file",
