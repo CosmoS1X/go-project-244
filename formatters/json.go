@@ -2,6 +2,7 @@ package formatters
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/CosmoS1X/differ/diff"
 )
@@ -14,14 +15,17 @@ type rootNode struct {
 	Children []diff.Diff `json:"children"`
 }
 
-func (j *jsonFormatter) Format(diffNodes []diff.Diff) string {
+func (j *jsonFormatter) Format(diffNodes []diff.Diff) (string, error) {
 	root := rootNode{
 		Key:      "",
 		Type:     "root",
 		Children: diffNodes,
 	}
 
-	data, _ := json.MarshalIndent(root, "", "  ")
+	data, err := json.MarshalIndent(root, "", "  ")
+	if err != nil {
+		return "", fmt.Errorf("marshal diff nodes: %w", err)
+	}
 
-	return string(data)
+	return string(data), nil
 }
