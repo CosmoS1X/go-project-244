@@ -63,12 +63,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 		Action: func(ctx context.Context, c *cli.Command) error {
 			paths := c.StringArgs("paths")
 
-			diff, err := differ.Gen(paths[0], paths[1], c.String("format"))
+			result, err := differ.Gen(paths[0], paths[1], c.String("format"))
 			if err != nil {
 				return err
 			}
 
-			fmt.Fprintln(stdout, diff)
+			fmt.Fprintln(stdout, result)
 			return nil
 		},
 	}
