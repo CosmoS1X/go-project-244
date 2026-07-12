@@ -1,4 +1,4 @@
-module code
+module github.com/CosmoS1X/differ
 
 go 1.26.4
 

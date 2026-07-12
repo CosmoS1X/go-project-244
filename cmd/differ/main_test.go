@@ -10,7 +10,7 @@ import (
 )
 
 func TestRun(t *testing.T) {
-	appname := "gendiff"
+	appname := "differ"
 	root := filepath.Join("..", "..")
 	testDirPath := filepath.Join(root, "testdata")
 	filePath1 := filepath.Join(testDirPath, "file1.json")

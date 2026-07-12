@@ -10,7 +10,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"code"
+	"github.com/CosmoS1X/differ"
 )
 
 const (
@@ -25,7 +25,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	formatsList := strings.Join(allowedFormats, ", ")
 
 	cmd := &cli.Command{
-		Name:                   "gendiff",
+		Name:                   "differ",
 		Usage:                  "Compares two configuration files and shows a difference.",
 		UseShortOptionHandling: true,
 		Flags: []cli.Flag{
@@ -63,12 +63,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 		Action: func(ctx context.Context, c *cli.Command) error {
 			paths := c.StringArgs("paths")
 
-			diff, err := code.GenDiff(paths[0], paths[1], c.String("format"))
+			result, err := differ.Gen(paths[0], paths[1], c.String("format"))
 			if err != nil {
 				return err
 			}
 
-			fmt.Fprintln(stdout, diff)
+			fmt.Fprintln(stdout, result)
 			return nil
 		},
 	}

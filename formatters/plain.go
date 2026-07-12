@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"code/diff"
-	"code/parsers"
+	"github.com/CosmoS1X/differ/diff"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 type plainFormatter struct{}
@@ -23,8 +23,8 @@ func (p *plainFormatter) fmtValue(value any) string {
 	}
 }
 
-func (p *plainFormatter) Format(diffNodes []diff.Diff) string {
-	return p.walk(diffNodes, "")
+func (p *plainFormatter) Format(diffNodes []diff.Diff) (string, error) {
+	return p.walk(diffNodes, ""), nil
 }
 
 func (p *plainFormatter) walk(nodes []diff.Diff, path string) string {

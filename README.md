@@ -1,7 +1,6 @@
-# gendiff
+# Differ
 
-[![Actions Status](https://github.com/CosmoS1X/go-project-244/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/CosmoS1X/go-project-244/actions)
-[![Go](https://github.com/CosmoS1X/go-project-244/actions/workflows/go.yml/badge.svg)](https://github.com/CosmoS1X/go-project-244/actions/workflows/go.yml)
+[![Go](https://github.com/CosmoS1X/differ/actions/workflows/go.yml/badge.svg)](https://github.com/CosmoS1X/differ/actions/workflows/go.yml)
 
 ## Overview
 
@@ -19,15 +18,15 @@ A small command-line utility for comparing two configuration files and showing t
 You can install the application using Go:
 
 ```bash
-go install github.com/CosmoS1X/go-project-244/cmd/gendiff@latest
+go install github.com/CosmoS1X/differ/cmd/differ@latest
 ```
 
-You can also download a precompiled binary from the [releases page]().
+You can also download a precompiled binary from the [releases page](https://github.com/CosmoS1X/differ/releases).
 
 ## Usage
 
 ```bash
-gendiff <file1> <file2>
+differ <file1> <file2>
 ```
 
 Optional flags:
@@ -37,9 +36,9 @@ By default, the output format is stylish.
 The format flag supports both short and long forms:
 
 ```bash
-gendiff --format stylish <file1> <file2>
-gendiff -f plain <file1> <file2>
-gendiff -f json <file1> <file2>
+differ --format stylish <file1> <file2>
+differ -f plain <file1> <file2>
+differ -f json <file1> <file2>
 ```
 
 ## Library usage
@@ -47,7 +46,7 @@ gendiff -f json <file1> <file2>
 The package can also be used as a Go library. Import the package and call the diff function:
 
 ```go
-import "github.com/CosmoS1X/go-project-244"
+import "github.com/CosmoS1X/differ"
 
-result, err := code.GenDiff("file1.json", "file2.json", "stylish")
+result, err := differ.Gen("file1.json", "file2.json", "stylish")
 ```

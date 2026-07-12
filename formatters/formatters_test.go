@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"code/diff"
-	"code/parsers"
+	"github.com/CosmoS1X/differ/diff"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 var testDiffNodes = []diff.Diff{
@@ -64,4 +64,12 @@ func TestFormat_JSONFormatter(t *testing.T) {
 	assert.Contains(t, got, `"type": "nested"`)
 	assert.Contains(t, got, `"value1": "Value 1"`)
 	assert.Contains(t, got, `"value2": "blah blah"`)
+}
+
+func TestJSONFormatter_ReturnsErrorForUnsupportedValue(t *testing.T) {
+	formatter := &jsonFormatter{}
+	_, err := formatter.Format([]diff.Diff{{Key: "broken", Value1: func() {}, Type: diff.Added}})
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "marshal diff nodes")
 }

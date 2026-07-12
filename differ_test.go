@@ -1,4 +1,4 @@
-package code
+package differ
 
 import (
 	"os"
@@ -34,7 +34,7 @@ func readExpectedOutput(t *testing.T, path string) string {
 	return strings.TrimSpace(string(data))
 }
 
-func TestGendiff(t *testing.T) {
+func TestGen(t *testing.T) {
 	cases := []struct {
 		name         string
 		path1, path2 string
@@ -119,13 +119,13 @@ func TestGendiff(t *testing.T) {
 			t.Parallel()
 
 			if c.wantErr {
-				_, err := GenDiff(c.path1, c.path2, c.format)
+				_, err := Gen(c.path1, c.path2, c.format)
 				require.Error(t, err)
 				return
 			}
 
 			want := readExpectedOutput(t, c.expected)
-			got, err := GenDiff(c.path1, c.path2, c.format)
+			got, err := Gen(c.path1, c.path2, c.format)
 
 			require.NoError(t, err)
 			require.Equal(t, want, got)

@@ -14,7 +14,7 @@ type (
 	ParsedData = map[string]any
 )
 
-var parsers = map[string]parseFn{
+var registry = map[string]parseFn{
 	".json": json.Unmarshal,
 	".yml":  yaml.Unmarshal,
 	".yaml": yaml.Unmarshal,
@@ -32,7 +32,7 @@ func parseRaw(data []byte, parser parseFn) (ParsedData, error) {
 func ParseFile(path string) (ParsedData, error) {
 	ext := filepath.Ext(path)
 
-	parser, ok := parsers[ext]
+	parser, ok := registry[ext]
 	if !ok {
 		return nil, fmt.Errorf("unsupported file extension %q", ext)
 	}

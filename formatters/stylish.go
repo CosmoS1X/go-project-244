@@ -6,8 +6,8 @@ import (
 	"slices"
 	"strings"
 
-	"code/diff"
-	"code/parsers"
+	"github.com/CosmoS1X/differ/diff"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 type stylishFormatter struct{}
@@ -42,8 +42,8 @@ func (s *stylishFormatter) fmtValue(value any, depth int) string {
 	return b.String()
 }
 
-func (s *stylishFormatter) Format(diffNodes []diff.Diff) string {
-	return s.walk(diffNodes, 1)
+func (s *stylishFormatter) Format(diffNodes []diff.Diff) (string, error) {
+	return s.walk(diffNodes, 1), nil
 }
 
 func (s *stylishFormatter) walk(nodes []diff.Diff, depth int) string {

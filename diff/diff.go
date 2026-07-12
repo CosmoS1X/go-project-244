@@ -4,7 +4,7 @@ import (
 	"maps"
 	"slices"
 
-	"code/parsers"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 type Diff struct {
