@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"code/parsers"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 func buildTestData() (data1, data2 parsers.ParsedData) {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"code/diff"
-	"code/parsers"
+	"github.com/CosmoS1X/differ/diff"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 type plainFormatter struct{}

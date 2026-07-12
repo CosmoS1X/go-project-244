@@ -1,12 +1,12 @@
-package code
+package differ
 
 import (
-	"code/diff"
-	"code/formatters"
-	"code/parsers"
+	"github.com/CosmoS1X/differ/diff"
+	"github.com/CosmoS1X/differ/formatters"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
-func GenDiff(path1, path2, format string) (string, error) {
+func Gen(path1, path2, format string) (string, error) {
 	parsedData1, err := parsers.ParseFile(path1)
 	if err != nil {
 		return "", err

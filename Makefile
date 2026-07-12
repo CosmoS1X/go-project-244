@@ -1,5 +1,5 @@
 RUN_ARGS ?=
-APP_NAME := gendiff
+APP_NAME := differ
 
 .PHONY: fmt tidy test lint build run vuln clean
 

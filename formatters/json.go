@@ -3,7 +3,7 @@ package formatters
 import (
 	"encoding/json"
 
-	"code/diff"
+	"github.com/CosmoS1X/differ/diff"
 )
 
 type jsonFormatter struct{}

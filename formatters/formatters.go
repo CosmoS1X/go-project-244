@@ -3,7 +3,7 @@ package formatters
 import (
 	"fmt"
 
-	"code/diff"
+	"github.com/CosmoS1X/differ/diff"
 )
 
 type Formatter interface {

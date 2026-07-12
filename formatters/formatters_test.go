@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"code/diff"
-	"code/parsers"
+	"github.com/CosmoS1X/differ/diff"
+	"github.com/CosmoS1X/differ/parsers"
 )
 
 var testDiffNodes = []diff.Diff{
