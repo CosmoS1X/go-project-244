@@ -21,7 +21,7 @@ You can install the application using Go:
 go install github.com/CosmoS1X/differ/cmd/differ@latest
 ```
 
-You can also download a precompiled binary from the [releases page]().
+You can also download a precompiled binary from the [releases page](https://github.com/CosmoS1X/differ/releases).
 
 ## Usage
 
