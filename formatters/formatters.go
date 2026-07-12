@@ -7,7 +7,7 @@ import (
 )
 
 type Formatter interface {
-	Format(diffNodes []diff.Diff) string
+	Format(diffNodes []diff.Diff) (string, error)
 }
 
 var registry = map[string]Formatter{
@@ -22,5 +22,5 @@ func Format(diffNodes []diff.Diff, format string) (string, error) {
 		return "", fmt.Errorf("unsupported format name: %q", format)
 	}
 
-	return formatter.Format(diffNodes), nil
+	return formatter.Format(diffNodes)
 }
